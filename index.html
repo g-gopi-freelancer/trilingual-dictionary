@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>English - Hindi - Tamil Dictionary</title>
+    <script src="brython.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+        }
+        h1 {
+            color: #1e293b;
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 85%;
+            padding: 12px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        .result-box {
+            margin-top: 25px;
+            text-align: left;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #0f766e;
+            display: none;
+        }
+        .lang-row {
+            margin: 8px 0;
+            font-size: 18px;
+            color: #1e293b;
+        }
+        .label {
+            font-weight: bold;
+            color: #0f766e;
+            display: inline-block;
+            width: 85px;
+        }
+        .error {
+            margin-top: 20px;
+            color: #dc2626;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body onload="brython()">
+
+    <div class="card">
+        <h1>Trilingual Dictionary</h1>
+        <p class="subtitle">Search in English, Hindi (हिन्दी), or Tamil (தமிழ்)</p>
+        
+        <input id="search-input" placeholder="Try: water, book, நீர், पानी...">
+        <br>
+        <button id="search-btn">Translate</button>
+        
+        <p id="error-msg" class="error"></p>
+
+        <div id="result-box" class="result-box">
+            <div class="lang-row"><span class="label">English:</span> <span id="res-en"></span></div>
+            <div class="lang-row"><span class="label">Hindi:</span> <span id="res-hi"></span></div>
+            <div class="lang-row"><span class="label">Tamil:</span> <span id="res-ta"></span></div>
+        </div>
+    </div>
+
+<script type="text/python">
+from browser import document
+
+# Dictionary database: each entry stores English, Hindi, and Tamil
+dictionary = [
+    {"en": "water", "hi": "पानी (Paani)", "ta": "தண்ணீர் / நீர் (Thanneer)"},
+    {"en": "book", "hi": "किताब (Kitaab)", "ta": "புத்தகம் (Puththagam)"},
+    {"en": "house", "hi": "घर (Ghar)", "ta": "வீடு (Veedu)"},
+    {"en": "food", "hi": "खाना (Khaana)", "ta": "உணவு (Unavu)"},
+    {"en": "friend", "hi": "दोस्त (Dost)", "ta": "நண்பன் (Nanban)"},
+    {"en": "school", "hi": "विद्यालय (Vidyaalay)", "ta": "பள்ளி (Palli)"},
+    {"en": "sun", "hi": "सूरज (Sooraj)", "ta": "சூரியன் (Sooriyan)"},
+    {"en": "moon", "hi": "चाँद (Chaand)", "ta": "நிலா (Nilaa)"},
+    {"en": "tree", "hi": "पेड़ (Ped)", "ta": "மரம் (Maram)"},
+    {"en": "thank you", "hi": "धन्यवाद (Dhanyavaad)", "ta": "நன்றி (Nandri)"}
+]
+
+def search_word(event):
+    query = document["search-input"].value.strip().lower()
+    document["error-msg"].text = ""
+    document["result-box"].style.display = "none"
+
+    if not query:
+        document["error-msg"].text = "Please enter a word to search!"
+        return
+
+    for entry in dictionary:
+        # Check if the typed word matches English, Hindi, or Tamil
+        if query in entry["en"].lower() or query in entry["hi"].lower() or query in entry["ta"].lower():
+            document["res-en"].text = entry["en"].capitalize()
+            document["res-hi"].text = entry["hi"]
+            document["res-ta"].text = entry["ta"]
+            document["result-box"].style.display = "block"
+            return
+
+    document["error-msg"].text = f"'{query}' not found in dictionary yet."
+
+document["search-btn"].bind("click", search_word)
+</script>
+
+</body>
+</html>
